@@ -3,9 +3,13 @@ name: Manual Deploy to Oracle VM
 on:
   workflow_dispatch: # run manually from GitHub Actions tab
 
+env:
+  appName: 'tarotapp.service'
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: dev
 
     steps:
     # 1. Checkout repo
@@ -27,20 +31,20 @@ jobs:
     - name: Copy files to Oracle VM
       uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.VM_SSH_KEY }}
+        host: ${{ secrets.TAROTSERVICE_APP_VM_HOST }}
+        username: ${{ secrets.TAROTSERVICE_APP_VM_USER }}
+        key: ${{ secrets.TAROTSERVICE_APP_VM_SSH_KEY }}
         source: "publish/*"
-        target: "${{ secrets.VM_APP_DIR }}"
+        target: "${{ secrets.TAROTSERVICE_APP_VM_PATH }}"
         overwrite: true
 
     # 5. Restart systemd service
     - name: Restart app on VM
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.VM_HOST }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.VM_SSH_KEY }}
+        host: ${{ secrets.TAROTSERVICE_APP_VM_HOST }}
+        username: ${{ secrets.TAROTSERVICE_APP_VM_USER }}
+        key: ${{ secrets.TAROTSERVICE_APP_VM_SSH_KEY }}
         script: |
-          sudo systemctl restart myapp.service
-          sudo systemctl status myapp.service --no-pager
+          sudo systemctl restart ${{ env.acrName }}
+          sudo systemctl status ${{ env.acrName }} --no-pager
