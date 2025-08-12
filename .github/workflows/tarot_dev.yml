@@ -1,0 +1,46 @@
+name: Manual Deploy to Oracle VM
+
+on:
+  workflow_dispatch: # run manually from GitHub Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout repo
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Setup .NET 8
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    # 3. Publish app for Linux
+    - name: Publish app
+      run: |
+        dotnet publish -c Release -r linux-x64 --self-contained false -o publish
+
+    # 4. Copy files to VM via SCP
+    - name: Copy files to Oracle VM
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        source: "publish/*"
+        target: "${{ secrets.VM_APP_DIR }}"
+        overwrite: true
+
+    # 5. Restart systemd service
+    - name: Restart app on VM
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          sudo systemctl restart myapp.service
+          sudo systemctl status myapp.service --no-pager
