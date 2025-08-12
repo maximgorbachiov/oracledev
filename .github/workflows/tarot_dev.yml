@@ -25,8 +25,8 @@ jobs:
     # 3. Publish app for Linux
     - name: Publish app
       run: |
-        cd TarotService
-        dotnet publish -c Release -r linux-x64 --self-contained false -o publish
+        cd TarotService/TarotService
+        dotnet publish -c Release -r linux-x64 --self-contained false -o ../../publish
 
     # 4. Copy files to VM via SCP
     - name: Copy files to Oracle VM
