@@ -30,24 +30,22 @@ jobs:
         cd TarotService/TarotService
         dotnet publish -c Release -r linux-x64 --self-contained false -o ../../publish
 
-    # 4. Copy files to VM via SCP
-    - name: Copy files to Oracle VM
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.TAROTSERVICE_APP_VM_HOST }}
-        username: ${{ secrets.TAROTSERVICE_APP_VM_USER }}
-        key: ${{ secrets.TAROTSERVICE_APP_VM_SSH_KEY }}
-        source: "publish/*"
-        target: "${{ secrets.TAROTSERVICE_APP_VM_PATH }}"
-        overwrite: true
+    # 4. Setup SSH key
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.TAROTSERVICE_APP_VM_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.TAROTSERVICE_APP_VM_HOST }} >> ~/.ssh/known_hosts
 
-    # 5. Restart systemd service
-    - name: Restart app on VM
-      uses: appleboy/ssh-action@v0.1.8
-      with:
-        host: ${{ secrets.TAROTSERVICE_APP_VM_HOST }}
-        username: ${{ secrets.TAROTSERVICE_APP_VM_USER }}
-        key: ${{ secrets.TAROTSERVICE_APP_VM_SSH_KEY }}
-        script: |
-          sudo systemctl restart ${{ env.acrName }}
-          sudo systemctl status ${{ env.acrName }} --no-pager
+    # 5. Copy files using native scp
+    - name: Copy files to Oracle VM
+      run: |
+        scp -r publish/* \
+          ${{ secrets.TAROTSERVICE_APP_VM_USER }}@${{ secrets.TAROTSERVICE_APP_VM_HOST }}:${{ secrets.TAROTSERVICE_APP_VM_PATH }}
+
+    # 6. Restart nginx (or your app service) via ssh
+    - name: Restart service on VM
+      run: |
+        ssh ${{ secrets.TAROTSERVICE_APP_VM_USER }}@${{ secrets.TAROTSERVICE_APP_VM_HOST }} \
+          "sudo systemctl restart nginx && sudo systemctl restart ${{ env.appName }} && sudo systemctl status ${{ env.appName }} --no-pager"

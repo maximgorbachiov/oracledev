@@ -33,6 +33,7 @@ Then, to change dnf from internal Oracle to the public:
 
     curl -I http://130.61.207.17
     If that still times out, it’s almost always the VCN security list not allowing inbound HTTP.
+4. 
 
 
 Potential issues:
