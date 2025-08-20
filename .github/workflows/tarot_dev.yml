@@ -24,6 +24,11 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    - name: Debug SSH values
+      run: |
+        echo "Host: ${{ secrets.TAROTSERVICE_APP_VM_HOST }}"
+        echo "User: ${{ secrets.TAROTSERVICE_APP_VM_USER }}"
+
     # 3. Publish app for Linux
     - name: Publish app
       run: |
@@ -38,13 +43,20 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.TAROTSERVICE_APP_VM_HOST }} >> ~/.ssh/known_hosts
 
-    # 5. Copy files using native scp
+    # 5. Test SSH connection
+    - name: Test SSH connection
+      run: |
+        ssh -vvv -i ~/.ssh/id_rsa \
+        ${{ secrets.TAROTSERVICE_APP_VM_USER }}@${{ secrets.TAROTSERVICE_APP_VM_HOST }} \
+        "echo Connected successfully"
+
+    # 6. Copy files using native scp
     - name: Copy files to Oracle VM
       run: |
         scp -r publish/* \
           ${{ secrets.TAROTSERVICE_APP_VM_USER }}@${{ secrets.TAROTSERVICE_APP_VM_HOST }}:${{ secrets.TAROTSERVICE_APP_VM_PATH }}
 
-    # 6. Restart nginx (or your app service) via ssh
+    # 7. Restart nginx (or your app service) via ssh
     - name: Restart service on VM
       run: |
         ssh ${{ secrets.TAROTSERVICE_APP_VM_USER }}@${{ secrets.TAROTSERVICE_APP_VM_HOST }} \
