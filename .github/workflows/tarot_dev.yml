@@ -56,7 +56,7 @@ jobs:
     # 6. Copy files using native scp
     - name: Copy files to Oracle VM
       run: |
-        scp -r publish/* \
+        scp -i ~/.ssh/id_ed25519 -r publish/* \
           ${{ secrets.TAROTSERVICE_APP_VM_USER }}@${{ secrets.TAROTSERVICE_APP_VM_HOST }}:${{ secrets.TAROTSERVICE_APP_VM_PATH }}
 
     # 7. Restart nginx (or your app service) via ssh
