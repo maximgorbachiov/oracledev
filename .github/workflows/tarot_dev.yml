@@ -44,7 +44,7 @@ jobs:
         ssh-keyscan -H ${{ secrets.TAROTSERVICE_APP_VM_HOST }} >> ~/.ssh/known_hosts
 
     - name: SSH Hash code for private key
-      run: ssh-keygen -y -f ~/.ssh/id_rsa | sha256sum
+      run: ssh-keygen -lf ~/.ssh/id_rsa -E sha256
 
     # 5. Test SSH connection
     - name: Test SSH connection
