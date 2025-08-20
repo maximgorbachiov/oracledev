@@ -43,6 +43,9 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.TAROTSERVICE_APP_VM_HOST }} >> ~/.ssh/known_hosts
 
+    - name: SSH Hash code for private key
+      run: ssh-keygen -y -f ~/.ssh/id_rsa | sha256sum
+
     # 5. Test SSH connection
     - name: Test SSH connection
       run: |
