@@ -33,7 +33,9 @@ Then, to change dnf from internal Oracle to the public:
 
     curl -I http://130.61.207.17
     If that still times out, it’s almost always the VCN security list not allowing inbound HTTP.
-4. 
+4. etc -> systemd -> system -> tarotapp.service (systemctl service restart config)
+5. etc -> nginx -> conf.d -> tarotapp.conf (nginx reverse proxy config)
+6. var -> www -> tarotapp (application folder)
 
 
 Potential issues:
