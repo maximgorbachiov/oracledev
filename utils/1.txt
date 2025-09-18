@@ -1,0 +1,3 @@
+sudo usermod -aG nginx opc #adds 'opc' user to the 'nginx' group to share accessibility to the tarot app source folder
+sudo chgrp -R nginx /var/www/tarotapp #Change the folder’s group ownership to 'nginx'
+sudo chmod -R 775 /var/www/tarotapp #Give group write permissions

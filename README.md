@@ -37,7 +37,7 @@ Then, to change dnf from internal Oracle to the public:
 5. etc -> nginx -> conf.d -> tarotapp.conf (nginx reverse proxy config)
 6. var -> www -> tarotapp (application folder)
 7. sudo setsebool -P httpd_can_network_connect 1 // this command MUST BE run to show linux that nginx could use port 5000
-
+8. After github action setup your user for github action should be in the same group as nginx user on linux vm. See utils/1.txt
 
 Potential issues:
 1. Errors during downloading metadata for repository 'ol9_ksplice':
