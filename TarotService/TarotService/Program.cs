@@ -13,6 +13,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Hello Iryna, I love you so much!!!, and what about you?");
 
 app.Run();
