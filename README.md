@@ -1,3 +1,4 @@
+- backend service api is: http://tarotbackapi.duckdns.org/
 1. To setup VM should be followed the next public network guide: https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/scenarioa.htm#Scenario_A_Public_Subnet
 Then, to change dnf from internal Oracle to the public: 
     sudo sed -i 's|https://yum\$ociregion\.\$ocidomain|https://yum.oracle.com|' /etc/yum.repos.d/*.repo
