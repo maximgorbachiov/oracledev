@@ -1,0 +1,9 @@
+Project Source Files
+====================
+
+TarotService/TarotService.sln
+TarotService/TarotService/Program.cs
+TarotService/TarotService/Properties/launchSettings.json
+TarotService/TarotService/TarotService.csproj
+TarotService/TarotService/appsettings.Development.json
+TarotService/TarotService/appsettings.json
