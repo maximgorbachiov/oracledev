@@ -2,9 +2,9 @@ using TarotService.Data.Models.Enums;
 
 namespace TarotService.BusinessLogic.BusinessModels.Users;
 
-public class UserInfo
+public class UserInfoVm
 {
-    public string Id { get; set; }
+    public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTime DateOfBirth { get; set; }

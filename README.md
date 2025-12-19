@@ -1,5 +1,5 @@
 - backend service api is: http://tarotbackapi.duckdns.org/
-1. To setup VM should be followed the next public network guide: https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/scenarioa.htm#Scenario_A_Public_Subnet
+1. To setup VM should be followed the next public network guide (also to setup ssl certificate should ipv6 address be setup): https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/scenarioa.htm#Scenario_A_Public_Subnet
 Then, to change dnf from internal Oracle to the public: 
     sudo sed -i 's|https://yum\$ociregion\.\$ocidomain|https://yum.oracle.com|' /etc/yum.repos.d/*.repo
     sudo dnf clean all
@@ -39,6 +39,7 @@ Then, to change dnf from internal Oracle to the public:
 6. var -> www -> tarotapp (application folder)
 7. sudo setsebool -P httpd_can_network_connect 1 // this command MUST BE run to show linux that nginx could use port 5000
 8. After github action setup your user for github action should be in the same group as nginx user on linux vm. See utils/1.txt
+9. To setup SSL it will be better to ask ChatGPT and Claude
 
 Potential issues:
 1. Errors during downloading metadata for repository 'ol9_ksplice':
@@ -78,5 +79,13 @@ Potential issues:
     sudo dnf clean all
     sudo dnf update -y
 
-
-
+Future goals:
+1) Create backend service which implements next:
+    1.1 - User management module (add, delete, update, get, get all, create admin user)
+    1.2 - login, register module (user register by login/password and also by third party provider) with email verification
+    1.3 - user's tarot main functions (get card of the day, get three cards, get history ...)
+    1.4 - admin's tarot main functions (upload images, update description, create card of the day, create different tarot sets, ...)
+    1.5 - background service which archive users history after 30 days
+2) Store everything in one db (check for Postgres or Oracle DB)
+3) Separate all the described above domains into different services and connect (what can be) them through the Kafka
+4) Separate data by several db's perfectly one db by one service (use more appropriate db base on data and requirments)

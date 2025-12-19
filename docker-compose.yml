@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - tarot_network
+
+  postgres:
+    image: postgres:15
+    container_name: tarot-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432" # expose Postgres to host so PGAdmin can connect
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tarot_network
+
+  tarot-service:
+    build: .
+    container_name: tarot-service
+    image: tarot-service
+    restart: on-failure
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=tarot-db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres
+    ports:
+      - "5000:8080"
+    networks:
+      - tarot_network
+
+networks:
+  tarot_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
